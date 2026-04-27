@@ -11,6 +11,10 @@
         "lint:fix": "bunx eslint . --fix --cache",
         "format": "bunx prettier --write ."
     },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lukasbableck/php-obfuscate.git"
+    },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@types/bun": "latest",
