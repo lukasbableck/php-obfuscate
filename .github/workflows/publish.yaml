@@ -1,4 +1,6 @@
 name: Publish Package to npmjs
+permissions:
+  id-token: write
 on:
   push:
     tags:
