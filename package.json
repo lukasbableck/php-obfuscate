@@ -1,0 +1,33 @@
+{
+    "name": "php-obfuscate",
+    "module": "src/cli.ts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "build": "tsc --noEmit",
+        "check": "bun run src/cli.ts --help",
+        "test": "bun test",
+        "lint": "bunx eslint . --cache",
+        "lint:fix": "bunx eslint . --fix --cache",
+        "format": "bunx prettier --write ."
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@types/bun": "latest",
+        "eslint": "^10.2.1",
+        "eslint-config-prettier": "^10.1.8",
+        "jiti": "^2.6.1",
+        "typescript-eslint": "^8.59.0"
+    },
+    "dependencies": {
+        "@prettier/plugin-php": "^0.25.0",
+        "cac": "^7.0.0",
+        "php-parser": "^3.5.1",
+        "php-unparser": "^0.2.9",
+        "prettier": "^3.8.3",
+        "zod": "^4.3.6"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    }
+}
