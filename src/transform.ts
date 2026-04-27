@@ -23,13 +23,23 @@ function warn(message: string, code: string, node?: NodeLike): Warning {
     return { code, message, line: node?.loc?.start?.line };
 }
 
+function scalarString(value: unknown): string | null {
+    if (typeof value === 'string') {
+        return value;
+    }
+    if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+        return String(value);
+    }
+    return null;
+}
+
 function identifierName(node: unknown): string | null {
     if (!node || typeof node !== 'object') {
         return null;
     }
     const typed = node as NodeLike;
     if (['identifier', 'name', 'typereference'].includes(typed.kind)) {
-        return String(typed.name ?? '');
+        return scalarString(typed.name);
     }
     return null;
 }
@@ -407,11 +417,15 @@ function transformNode(
             continue;
         }
         if (Array.isArray(value)) {
-            clone[key] = value.map(item =>
-                item && typeof item === 'object' && 'kind' in item
-                    ? transformNode(item as NodeLike, scopes, functionRenames, classRenames, config, generator, annotations, scope, ownerClass)
-                    : item,
-            );
+            const transformed: unknown[] = [];
+            for (const item of value) {
+                transformed.push(
+                    item && typeof item === 'object' && 'kind' in item
+                        ? transformNode(item as NodeLike, scopes, functionRenames, classRenames, config, generator, annotations, scope, ownerClass)
+                        : item,
+                );
+            }
+            clone[key] = transformed;
             continue;
         }
         if (typeof value === 'object' && 'kind' in value) {
@@ -430,7 +444,7 @@ function transformNode(
         const target = clone.what as NodeLike | undefined;
         const currentName = identifierName(target);
         if (currentName && functionRenames.has(currentName)) {
-            (target!).name = functionRenames.get(currentName);
+            target!.name = functionRenames.get(currentName);
         }
     }
 

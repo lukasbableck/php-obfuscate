@@ -8,6 +8,20 @@ import { obfuscateCode } from './obfuscate';
 
 const cli = cac('php-obfuscate');
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null;
+}
+
+function readStringFlag(flags: Record<string, unknown>, key: string): string | undefined {
+    const value = flags[key];
+    return typeof value === 'string' ? value : undefined;
+}
+
+function readBoolFlag(flags: Record<string, unknown>, key: string): boolean | undefined {
+    const value = flags[key];
+    return typeof value === 'boolean' ? value : undefined;
+}
+
 cli.command('[input]', 'Obfuscate single PHP file')
     .option('--out <path>', 'Output path')
     .option('--config <path>', 'JSON config path')
@@ -24,30 +38,47 @@ cli.command('[input]', 'Obfuscate single PHP file')
     .option('--transform-strings', 'Enable string transforms')
     .option('--string-mode <mode>', 'off|split|escape|mixed')
     .option('--verbose', 'Print config summary')
-    .action(async (input, flags) => {
-        if (!input) {
+    .action(async (input: unknown, rawFlags: unknown) => {
+        if (typeof input !== 'string' || input.length === 0) {
             cli.outputHelp();
             process.exit(1);
         }
 
-        const fileConfig = await loadConfig(flags.config);
+        const flags = isRecord(rawFlags) ? rawFlags : {};
+        const configPath = readStringFlag(flags, 'config');
+        const seed = readStringFlag(flags, 'seed');
+        const stringMode = readStringFlag(flags, 'stringMode');
+        const outPath = readStringFlag(flags, 'out');
+        const verbose = readBoolFlag(flags, 'verbose') ?? false;
+        const stdout = readBoolFlag(flags, 'stdout') ?? false;
+        const check = readBoolFlag(flags, 'check') ?? false;
+        const failOnWarning = readBoolFlag(flags, 'failOnWarning');
+        const validatePhpLint = readBoolFlag(flags, 'validatePhpLint');
+        const renameVariables = readBoolFlag(flags, 'renameVariables');
+        const renameParameters = readBoolFlag(flags, 'renameParameters');
+        const renameFunctions = readBoolFlag(flags, 'renameFunctions');
+        const renamePrivateMethods = readBoolFlag(flags, 'renamePrivateMethods');
+        const renamePrivateProperties = readBoolFlag(flags, 'renamePrivateProperties');
+        const transformStrings = readBoolFlag(flags, 'transformStrings');
+
+        const fileConfig = await loadConfig(configPath);
         const config = mergeConfig(
             fileConfig,
             buildCliOverrides({
-                seed: flags.seed,
-                failOnWarning: flags.failOnWarning,
-                validatePhpLint: flags.validatePhpLint,
-                renameVariables: flags.renameVariables,
-                renameParameters: flags.renameParameters,
-                renameFunctions: flags.renameFunctions,
-                renamePrivateMethods: flags.renamePrivateMethods,
-                renamePrivateProperties: flags.renamePrivateProperties,
-                transformStrings: flags.transformStrings,
-                stringMode: flags.stringMode,
+                seed,
+                failOnWarning,
+                validatePhpLint,
+                renameVariables,
+                renameParameters,
+                renameFunctions,
+                renamePrivateMethods,
+                renamePrivateProperties,
+                transformStrings,
+                stringMode: stringMode === 'off' || stringMode === 'split' || stringMode === 'escape' || stringMode === 'mixed' ? stringMode : undefined,
             }),
         );
 
-        if (flags.verbose) {
+        if (verbose) {
             console.error(configToSummary(config).join('\n'));
         }
 
@@ -58,7 +89,7 @@ cli.command('[input]', 'Obfuscate single PHP file')
             console.error(`[warn:${item.code}]${item.line ? ` line ${item.line}` : ''} ${item.message}`);
         }
 
-        if (flags.check) {
+        if (check) {
             if (result.changed) {
                 console.error('Output differs from input');
                 process.exit(1);
@@ -69,10 +100,10 @@ cli.command('[input]', 'Obfuscate single PHP file')
             process.exit(0);
         }
 
-        if (flags.stdout || !flags.out) {
+        if (stdout || !outPath) {
             process.stdout.write(result.code);
         } else {
-            await writeFile(flags.out, result.code, 'utf8');
+            await writeFile(outPath, result.code, 'utf8');
         }
 
         if (config.failOnWarning && result.warnings.length > 0) {

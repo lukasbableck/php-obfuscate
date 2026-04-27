@@ -2,7 +2,7 @@ import type { Annotation, CommentNode, NodeLike, ProgramNode } from './types';
 import type { ObfuscatorConfig } from './config';
 
 function extractKeepTarget(value: string): Pick<Annotation, 'targetType' | 'targetName'> {
-    const match = /@obfuscate-keep(?:\s+(variable|function|method|property))?(?:\s+([\$A-Za-z_][\w$]*))?/.exec(value);
+    const match = /@obfuscate-keep(?:\s+(variable|function|method|property))?(?:\s+([$A-Za-z_][\w$]*))?/.exec(value);
     if (!match) {
         return {};
     }
