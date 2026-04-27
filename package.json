@@ -2,7 +2,7 @@
     "name": "php-obfuscate",
     "module": "src/cli.ts",
     "type": "module",
-    "private": true,
+    "license": "MIT",
     "scripts": {
         "build": "tsc --noEmit",
         "check": "bun run src/cli.ts --help",
