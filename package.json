@@ -1,15 +1,15 @@
 {
     "name": "php-obfuscate",
-    "module": "src/cli.ts",
+    "module": "dist/cli.ts",
     "type": "module",
     "license": "MIT",
     "bin": {
-        "php-obfuscate": "dist/src/cli.js"
+        "php-obfuscate": "dist/cli.js"
     },
     "scripts": {
         "build": "tsc",
         "check": "bun run src/cli.ts --help",
-        "check:dist": "bun dist/src/cli.js --help",
+        "check:dist": "bun dist/cli.js --help",
         "prepublishOnly": "bun run build",
         "test": "bun test --coverage ./test/*",
         "lint": "bunx eslint . --cache",

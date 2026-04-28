@@ -10,10 +10,14 @@
         "noUncheckedIndexedAccess": true,
         "noImplicitOverride": true,
         "outDir": "dist",
+        "rootDir": "src",
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,
         "target": "ESNext",
         "types": ["bun"]
-    }
+    },
+    "include": [
+        "src/**/*"
+    ]
 }
