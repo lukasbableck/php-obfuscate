@@ -1,0 +1,42 @@
+name: CI
+
+on:
+    push:
+    pull_request:
+
+concurrency:
+    group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - uses: oven-sh/setup-bun@v2
+            - run: bun ci
+            - run: bun run build
+
+    format:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - uses: oven-sh/setup-bun@v2
+            - run: bun ci
+            - run: bun run format
+
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - uses: oven-sh/setup-bun@v2
+            - run: bun ci
+            - run: bun run lint
+
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - uses: oven-sh/setup-bun@v2
+            - run: bun ci
+            - run: bun test

@@ -14,7 +14,8 @@
         "test": "bun test",
         "lint": "bunx eslint . --cache",
         "lint:fix": "bunx eslint . --fix --cache",
-        "format": "bunx prettier --write ."
+        "format": "bunx prettier --check .",
+        "format:fix": "bunx prettier --write ."
     },
     "files": [
         "dist/**",
