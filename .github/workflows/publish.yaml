@@ -1,22 +1,24 @@
 name: Publish Package to npmjs
 permissions:
-  id-token: write
+    id-token: write
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+    push:
+        tags:
+            - 'v*.*.*'
 jobs:
-  publish:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
-      - uses: oven-sh/setup-bun@v2
-      - run: bun ci
-      - run: npm publish --provenance --access public
+    publish:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: '24'
+                  registry-url: 'https://registry.npmjs.org'
+            - uses: oven-sh/setup-bun@v2
+            - run: bun ci
+            - run: bun run build
+            - run: bun run check:dist
+            - run: npm publish --provenance --access public

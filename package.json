@@ -9,11 +9,18 @@
     "scripts": {
         "build": "tsc",
         "check": "bun run src/cli.ts --help",
+        "check:dist": "bun dist/src/cli.js --help",
+        "prepublishOnly": "bun run build",
         "test": "bun test",
         "lint": "bunx eslint . --cache",
         "lint:fix": "bunx eslint . --fix --cache",
         "format": "bunx prettier --write ."
     },
+    "files": [
+        "dist/**",
+        "README.md",
+        "LICENSE"
+    ],
     "repository": {
         "type": "git",
         "url": "git+https://github.com/lukasbableck/php-obfuscate.git"
