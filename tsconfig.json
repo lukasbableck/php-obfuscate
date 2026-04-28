@@ -17,7 +17,5 @@
         "target": "ESNext",
         "types": ["bun"]
     },
-    "include": [
-        "src/**/*"
-    ]
+    "include": ["src/**/*"]
 }
