@@ -11,7 +11,7 @@
         "check": "bun run src/cli.ts --help",
         "check:dist": "bun dist/src/cli.js --help",
         "prepublishOnly": "bun run build",
-        "test": "bun test",
+        "test": "bun test --coverage ./test/*",
         "lint": "bunx eslint . --cache",
         "lint:fix": "bunx eslint . --fix --cache",
         "format": "bunx prettier --check .",
